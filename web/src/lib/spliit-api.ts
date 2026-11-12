@@ -17,6 +17,13 @@ export type GroupSummary = {
   createdAt: string
   participantCount: number
 }
+export type GroupFormValues = {
+  name: string
+  information?: string
+  currency: string
+  currencyCode: string
+  participants: { name: string }[]
+}
 export type Category = { id: number; grouping: string; name: string }
 export type Expense = {
   id: string
@@ -131,6 +138,9 @@ export async function trpc<T>(
 
 export const getGroup = (base: string, groupId: string) =>
   trpc<{ group: Group | null }>(base, "groups.get", "query", { groupId })
+
+export const createGroup = (base: string, groupFormValues: GroupFormValues) =>
+  trpc<{ groupId: string }>(base, "groups.create", "mutation", { groupFormValues })
 
 export const getGroupDetails = (base: string, groupId: string) =>
   trpc<{ group: Group; participantsWithExpenses: string[] }>(base, "groups.getDetails", "query", { groupId })

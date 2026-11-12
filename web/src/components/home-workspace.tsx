@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import type { FormEvent } from "react"
 import useSWR, { useSWRConfig } from "swr"
-import { ArrowRight, Check, Link2, Smartphone, Users, WalletCards } from "lucide-react"
+import { ArrowRight, Check, House, Link2, Smartphone, Users, WalletCards } from "lucide-react"
+import { CreateHomeForm } from "./create-home-form"
 import { getGroup } from "@/lib/spliit-api"
 import { avatarColor } from "@/lib/format"
 import { getRecentGroups, rememberGroup, type RecentGroup } from "@/lib/storage"
@@ -34,6 +35,7 @@ export function HomeWorkspace() {
   const [error, setError] = useState("")
   const [busy, setBusy] = useState(false)
   const [replaceGroup, setReplaceGroup] = useState(false)
+  const [mode, setMode] = useState<"create" | "join">("create")
   const installPrompt = useInstallPrompt()
 
   async function joinGroup(event: FormEvent<HTMLFormElement>) {
@@ -59,6 +61,11 @@ export function HomeWorkspace() {
     } finally {
       setBusy(false)
     }
+  }
+
+  async function openCreatedHome(groupId: string) {
+    await mutate("recent-groups")
+    router.push(`/groups/${encodeURIComponent(groupId)}`)
   }
 
   return (
@@ -95,32 +102,40 @@ export function HomeWorkspace() {
             <Link className="button button-primary single-group-open" href={`/groups/${encodeURIComponent(group.groupId)}`}>
               Otwórz Dom <ArrowRight size={16} />
             </Link>
-            <button className="change-group-button" onClick={() => { setReplaceGroup(true); setError("") }}>
-              Podłącz inny Dom
+            <button className="change-group-button" onClick={() => { setReplaceGroup(true); setMode("create"); setError("") }}>
+              Zmień Dom
             </button>
           </section>
         ) : (
           <section className="join-panel" aria-labelledby="join-title">
             <div className="join-panel-heading">
-              <span className="join-panel-icon"><Link2 size={19} /></span>
+              <span className="join-panel-icon">{mode === "create" ? <House size={19} /> : <Link2 size={19} />}</span>
               <div>
-                <h2 id="join-title">{group ? "Podmień obecny Dom" : "Połącz swój Dom"}</h2>
-                <p>Wklej link do istniejącego Domu udostępniony przez domownika.</p>
+                <h2 id="join-title">{mode === "create" ? (group ? "Utwórz nowy Dom" : "Utwórz swój Dom") : group ? "Podłącz inny Dom" : "Mam już link do Domu"}</h2>
+                <p>{mode === "create" ? "Wpisz nazwę Domu i swoje imię. Utworzysz go bez gotowego linku." : "Wklej link do istniejącego Domu udostępniony przez domownika."}</p>
               </div>
             </div>
-            <form className="join-form" onSubmit={(event) => void joinGroup(event)}>
-              <label className="field-label" htmlFor="group-link">Link do Domu</label>
-              <div className="home-link-input">
-                <Link2 size={17} aria-hidden="true" />
-                <input id="group-link" required type="url" inputMode="url" autoComplete="url" value={url} onChange={(event) => setUrl(event.target.value)} placeholder="https://…/groups/ID" />
-              </div>
-              {error && <p className="form-error" role="alert">{error}</p>}
-              <button className="button button-primary join-submit" disabled={busy || !url.trim()}>
-                {busy ? "Sprawdzam link…" : "Otwórz Dom"}<ArrowRight size={16} />
-              </button>
-              {group && <button type="button" className="change-group-button" onClick={() => { setReplaceGroup(false); setUrl(""); setError("") }}>Wróć do obecnego Domu</button>}
-            </form>
-            <p className="join-note"><Check size={15} /> Jeden Dom na urządzeniu. Łączysz się z istniejącym Domem w Spliit; nowy link zastąpi poprzedni.</p>
+            <div className="home-mode-switch" role="group" aria-label="Wybierz sposób dodania Domu">
+              <button type="button" className="home-mode-button" aria-pressed={mode === "create"} onClick={() => { setMode("create"); setError(""); setUrl("") }}>Utwórz Dom</button>
+              <button type="button" className="home-mode-button" aria-pressed={mode === "join"} onClick={() => { setMode("join"); setError("") }}>Mam link</button>
+            </div>
+            {mode === "create" ? (
+              <CreateHomeForm replacesCurrentHome={Boolean(group)} onCreated={openCreatedHome} />
+            ) : (
+              <form className="join-form" onSubmit={(event) => void joinGroup(event)}>
+                <label className="field-label" htmlFor="group-link">Link do Domu</label>
+                <div className="home-link-input">
+                  <Link2 size={17} aria-hidden="true" />
+                  <input id="group-link" required type="url" inputMode="url" autoComplete="url" value={url} onChange={(event) => setUrl(event.target.value)} placeholder="https://…/groups/ID" />
+                </div>
+                {error && <p className="form-error" role="alert">{error}</p>}
+                <button className="button button-primary join-submit" disabled={busy || !url.trim()}>
+                  {busy ? "Sprawdzam link…" : "Otwórz Dom"}<ArrowRight size={16} />
+                </button>
+              </form>
+            )}
+            {group && <button className="change-group-button" onClick={() => { setReplaceGroup(false); setUrl(""); setError("") }}>Wróć do obecnego Domu</button>}
+            <p className="join-note"><Check size={15} />{mode === "create" ? " Nowy Dom powstanie na spliit.app. Po utworzeniu przejdziesz do niego i skopiujesz link dla domowników." : " Jeden Dom na urządzeniu. Nowy link zastąpi poprzedni."}</p>
           </section>
         )}
 

@@ -490,6 +490,11 @@ body { background: #edf3ef; }
 .change-group-button { display: block; width: 100%; min-height: 42px; border: 0; background: transparent; margin-top: 10px; color: #557466; cursor: pointer; font-size: 12px; font-weight: 650; }
 .change-group-button:hover { color: var(--accent-dark); }
 .join-panel { background: #fff; }
+.home-mode-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; border-radius: 10px; background: #f2f6f3; margin-bottom: 14px; padding: 4px; }
+.home-mode-button { min-height: 38px; border: 0; border-radius: 7px; background: transparent; color: #738177; cursor: pointer; font-size: 11px; font-weight: 620; transition: background .16s, color .16s, box-shadow .16s; }
+.home-mode-button[aria-pressed="true"] { background: #fff; color: #176b4d; box-shadow: 0 2px 8px rgba(35, 72, 51, .08); }
+.home-mode-button:focus-visible { outline: 3px solid rgba(5,150,105,.22); outline-offset: 2px; }
+.create-home-warning { border-radius: 8px; background: #fff8e8; margin: 2px 0; padding: 9px 11px; color: #8b651e; font-size: 10px; line-height: 1.5; }
 .join-panel-heading { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
 .join-panel-icon { display: grid; width: 38px; height: 38px; flex: 0 0 38px; place-items: center; border-radius: 12px; background: #e9f6ee; color: #087d5c; }
 .join-panel-heading h2 { margin: 1px 0 5px; color: #263d31; font-size: 17px; font-weight: 680; letter-spacing: -.035em; }

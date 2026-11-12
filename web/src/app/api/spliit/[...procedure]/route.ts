@@ -1,6 +1,7 @@
 const ALLOWED_PROCEDURES = new Set([
   "categories.list",
   "groups.list",
+  "groups.create",
   "groups.get",
   "groups.getDetails",
   "groups.update",

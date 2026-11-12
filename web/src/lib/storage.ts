@@ -55,7 +55,7 @@ export async function getRecentGroup(groupId: string): Promise<RecentGroup | und
   return withStore<RecentGroup | undefined>(GROUPS, "readonly", (store) => store.get(groupId))
 }
 
-export async function rememberGroup(group: Pick<RecentGroup, "groupId" | "groupName" | "instanceURL">) {
+export async function rememberGroup(group: Pick<RecentGroup, "groupId" | "groupName" | "instanceURL"> & Partial<Pick<RecentGroup, "participantId">>) {
   const previous = await getRecentGroup(group.groupId)
   const next: RecentGroup = { ...previous, ...group, visitedAt: Date.now(), starred: previous?.starred ?? false, archived: previous?.archived ?? false }
   await withStore(GROUPS, "readwrite", (store) => {
