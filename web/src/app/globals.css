@@ -333,6 +333,14 @@ a { color: inherit; text-decoration: none; }
 .allocation-good { background: #edf8f0; color: #3c7e57; }
 .allocation-warn { background: #fff7e9; color: #a46b13; }
 .document-note { display: flex; align-items: center; gap: 8px; border-radius: 7px; background: #f5f8f6; padding: 9px; color: #68776e; font-size: 9px; }
+.receipt-scan-box { display: grid; gap: 7px; margin-bottom: 3px; }
+.receipt-scan-trigger { display: flex; min-height: 43px; align-items: center; justify-content: center; gap: 8px; border: 1px dashed #a9c7b5; border-radius: 9px; background: #f7fbf8; padding: 9px 12px; color: #28634b; cursor: pointer; font-size: 11px; font-weight: 620; transition: border-color .16s, background .16s, color .16s; }
+.receipt-scan-trigger:hover { border-color: #66a886; background: #eef8f1; }
+.receipt-scan-trigger.is-scanning { color: #748178; cursor: progress; }
+.receipt-scan-hint, .receipt-scan-status { margin: 0; color: #7d8a82; font-size: 9px; line-height: 1.45; }
+.receipt-scan-status { color: #28634b; }
+.receipt-scan-spinner { animation: receipt-scan-spin 1s linear infinite; }
+@keyframes receipt-scan-spin { to { transform: rotate(360deg); } }
 .money-input { display: flex; height: 39px; align-items: center; gap: 8px; border: 1px solid var(--line-strong); border-radius: 8px; background: white; padding: 0 11px; color: #829087; }
 .money-input:focus-within { border-color: #70b99b; box-shadow: 0 0 0 3px rgba(5,150,105,.09); }
 .money-input > span { font-size: 11px; }
@@ -523,7 +531,7 @@ body { background: #edf3ef; }
 .heading-buttons .button { min-height: 42px; border-radius: 11px; }
 .group-tabs { gap: 0; }
 .group-tab { min-height: 48px; }
-.group-footer { display: flex; justify-content: space-between; gap: 10px; border-top: 1px solid #edf1ee; padding-top: 16px; color: #929e96; font-size: 10px; }
+.group-footer { display: flex; justify-content: center; gap: 10px; border-top: 1px solid #edf1ee; padding-top: 16px; color: #929e96; font-size: 10px; }
 .group-footer a { display: inline-flex; align-items: center; gap: 4px; }
 
 @media (max-width: 600px) {

@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useMemo, useState } from "react"
 import useSWR, { useSWRConfig } from "swr"
 import useSWRInfinite from "swr/infinite"
-import { ArrowDownLeft, ArrowLeft, ArrowRight, ArrowUpRight, BarChart3, Check, ChevronDown, CircleHelp, ExternalLink, Info, List, LoaderCircle, Plus, RefreshCw, Search, Settings2, Share2, Users, WalletCards, X } from "lucide-react"
+import { ArrowDownLeft, ArrowLeft, ArrowRight, ArrowUpRight, BarChart3, Check, ChevronDown, CircleHelp, Info, List, LoaderCircle, Plus, RefreshCw, Search, Settings2, Share2, Users, WalletCards, X } from "lucide-react"
 import { deleteExpense, getBalances, getGroup, getStats, listCategories, listExpenses, type Expense, type Reimbursement } from "@/lib/spliit-api"
 import { avatarColor, formatMoney, initials } from "@/lib/format"
 import { getDefaultInstance, getRecentGroup, updateRecentGroup } from "@/lib/storage"
@@ -157,7 +157,7 @@ export function GroupWorkspace({ groupId }: { groupId: string }) {
         <div className="info-layout"><section className="surface-card info-card"><div className="card-title"><div><h3>Domownicy</h3><p>{participantLabel(group.participants.length)} w tym domu</p></div><button className="icon-button" onClick={() => setModal("edit-group")} aria-label="Edytuj uczestników"><Settings2 size={15} /></button></div><div className="info-people">{group.participants.map((person, index) => <div className="info-person" key={person.id}><span className="group-avatar" style={{ backgroundColor: avatarColor(`${group.id}-${index}`) }}>{initials(person.name)}</span><span><strong>{person.name}</strong><small>{person.id === activeParticipant?.id ? "To Ty" : "Domownik"}</small></span>{person.id === activeParticipant?.id && <span className="you-tag">Ty</span>}</div>)}</div></section><section className="surface-card info-card"><div className="card-title"><div><h3>O tym domu</h3><p>Szczegóły widoczne dla wszystkich.</p></div><WalletCards size={17} className="muted-icon" /></div><div className="about-rows"><div><span>Waluta</span><strong>{group.currencyCode ? `${group.currency} · ${group.currencyCode}` : group.currency}</strong></div><div><span>Serwer</span><strong>{new URL(baseURL).hostname}</strong></div><div><span>ID domu</span><strong className="mono-text">{group.id}</strong></div>{group.information && <div className="about-note"><span>Opis</span><p>{group.information}</p></div>}</div><button className="button button-outline share-info" onClick={shareGroup}><Share2 size={15} /> Udostępnij link do Domu</button></section></div>
       </section>}
 
-      <footer className="group-footer"><span>Wspólne wydatki i rozliczenia w Domu.</span><a href="https://spliit.app" target="_blank" rel="noreferrer">O serwerze Spliit <ExternalLink size={12} /></a></footer>
+      <footer className="group-footer"><span>Wspólne wydatki i rozliczenia w Domu.</span></footer>
     </div>
 
     {modal === "new-expense" && <ExpenseForm baseURL={baseURL} group={group} categories={categoryResult?.categories ?? []} participantId={activeParticipant?.id} onClose={() => setModal(null)} onSaved={async () => { setModal(null); await refresh() }} />}
