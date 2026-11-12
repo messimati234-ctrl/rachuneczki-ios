@@ -1,24 +1,24 @@
 <!doctype html>
-<html lang="en">
+<html lang="pl">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#059669" />
-    <title>You’re offline · Spliit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b7857" />
+    <title>Brak połączenia · Rachuneczki</title>
     <style>
       * { box-sizing: border-box; }
-      body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; background: #f5f8f6; color: #17231d; font: 16px/1.5 system-ui, sans-serif; }
-      main { max-width: 420px; text-align: center; padding: 40px 28px; border: 1px solid #e2ebe5; border-radius: 24px; background: white; }
-      img { width: 168px; height: auto; margin-bottom: 24px; }
+      body { margin: 0; min-height: 100svh; display: grid; place-items: center; padding: 24px; background: #f3f7f4; color: #17231d; font: 16px/1.55 system-ui, sans-serif; }
+      main { width: min(100%, 420px); text-align: center; padding: 40px 28px; border: 1px solid #e2ebe5; border-radius: 24px; background: white; }
+      .mark { display: grid; width: 58px; height: 58px; place-items: center; margin: 0 auto 24px; border-radius: 19px; background: #0b7857; color: white; font-size: 25px; font-weight: 700; }
       h1 { margin: 0 0 8px; font-size: 26px; letter-spacing: -.04em; }
       p { margin: 0; color: #617168; }
     </style>
   </head>
   <body>
     <main>
-      <img src="/spliit-logo.png" alt="Spliit" />
-      <h1>You’re offline</h1>
-      <p>Your groups and balances need a connection to the Spliit server. Reconnect and refresh to continue.</p>
+      <div class="mark" aria-hidden="true">R</div>
+      <h1>Brak połączenia z internetem</h1>
+      <p>Wydatki i saldo wymagają połączenia z serwerem Spliit. Połącz się z internetem i odśwież stronę, aby kontynuować.</p>
     </main>
   </body>
 </html>

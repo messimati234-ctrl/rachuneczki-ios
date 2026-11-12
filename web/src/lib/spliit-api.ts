@@ -70,7 +70,7 @@ function serialize(value: unknown, path: string[] = [], dates: Record<string, st
 function endpointFor(instanceURL: string, procedure: string) {
   const base = new URL(instanceURL)
   if (!["https:", "http:"].includes(base.protocol) || base.username || base.password) {
-    throw new Error("Enter a valid Spliit server address using HTTP or HTTPS.")
+    throw new Error("Podaj prawidłowy adres serwera Spliit z protokołem HTTP lub HTTPS.")
   }
   base.search = ""
   base.hash = ""
@@ -109,7 +109,7 @@ export async function trpc<T>(
       response = await fetch(url, init)
     }
   } catch {
-    throw new Error("Couldn’t reach this Spliit server. It may need to allow this app’s domain in its CORS settings.")
+    throw new Error("Nie można połączyć z serwerem Spliit. Może wymagać dodania domeny aplikacji w ustawieniach CORS.")
   }
   type ResponsePayload = {
     error?: { json?: { message?: string; data?: { code?: string } } }
@@ -119,10 +119,10 @@ export async function trpc<T>(
   try {
     payload = await response.json() as ResponsePayload
   } catch {
-    throw new Error(`The server returned an unreadable response (${response.status}).`)
+    throw new Error(`Serwer zwrócił nieczytelną odpowiedź (status ${response.status}).`)
   }
   if (!response.ok || payload.error) {
-    const failure = new Error(payload.error?.json?.message || `The request failed (${response.status}).`) as Error & { code?: string }
+    const failure = new Error(payload.error?.json?.message || `Żądanie nie powiodło się (status ${response.status}).`) as Error & { code?: string }
     failure.code = payload.error?.json?.data?.code
     throw failure
   }
@@ -137,9 +137,6 @@ export const getGroupDetails = (base: string, groupId: string) =>
 
 export const listGroups = (base: string, groupIds: string[]) =>
   trpc<{ groups: GroupSummary[] }>(base, "groups.list", "query", { groupIds })
-
-export const createGroup = (base: string, groupFormValues: unknown) =>
-  trpc<{ groupId: string }>(base, "groups.create", "mutation", { groupFormValues })
 
 export const updateGroup = (base: string, groupId: string, groupFormValues: unknown, participantId?: string) =>
   trpc<unknown>(base, "groups.update", "mutation", { groupId, groupFormValues, participantId })

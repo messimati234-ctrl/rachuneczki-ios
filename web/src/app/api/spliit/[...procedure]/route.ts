@@ -3,7 +3,6 @@ const ALLOWED_PROCEDURES = new Set([
   "groups.list",
   "groups.get",
   "groups.getDetails",
-  "groups.create",
   "groups.update",
   "groups.expenses.list",
   "groups.expenses.get",
@@ -20,7 +19,7 @@ async function forward(request: Request, params: Promise<{ procedure: string[] }
   const { procedure: segments } = await params
   const procedure = segments.join(".")
   if (!ALLOWED_PROCEDURES.has(procedure)) {
-    return Response.json({ error: { json: { message: "This Spliit procedure is not available." } } }, { status: 404 })
+    return Response.json({ error: { json: { message: "Ta procedura Spliit jest niedostępna." } } }, { status: 404 })
   }
 
   const incoming = new URL(request.url)
@@ -35,7 +34,7 @@ async function forward(request: Request, params: Promise<{ procedure: string[] }
   if (request.method === "POST") {
     body = await request.text()
     if (new TextEncoder().encode(body).byteLength > MAX_BODY_BYTES) {
-      return Response.json({ error: { json: { message: "The request is too large." } } }, { status: 413 })
+      return Response.json({ error: { json: { message: "Żądanie jest zbyt duże." } } }, { status: 413 })
     }
     headers.set("Content-Type", "application/json")
   }
@@ -43,7 +42,7 @@ async function forward(request: Request, params: Promise<{ procedure: string[] }
   try {
     const upstream = await fetch(target, { method: request.method, headers, body, cache: "no-store", redirect: "manual" })
     if (upstream.status >= 300 && upstream.status < 400) {
-      return Response.json({ error: { json: { message: "The Spliit server redirected this request." } } }, { status: 502 })
+      return Response.json({ error: { json: { message: "Serwer Spliit przekierował to żądanie." } } }, { status: 502 })
     }
     return new Response(upstream.body, {
       status: upstream.status,
@@ -54,7 +53,7 @@ async function forward(request: Request, params: Promise<{ procedure: string[] }
       },
     })
   } catch {
-    return Response.json({ error: { json: { message: "Couldn’t connect to spliit.app." } } }, { status: 502 })
+    return Response.json({ error: { json: { message: "Nie udało się połączyć z spliit.app." } } }, { status: 502 })
   }
 }
 

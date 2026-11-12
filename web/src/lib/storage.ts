@@ -19,7 +19,7 @@ export type RecentGroup = {
 function openDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     if (typeof indexedDB === "undefined") {
-      reject(new Error("This browser doesn’t support local group storage."))
+      reject(new Error("Ta przeglądarka nie obsługuje lokalnego zapisu grupy."))
       return
     }
     const request = indexedDB.open(DATABASE, VERSION)
@@ -29,7 +29,7 @@ function openDatabase(): Promise<IDBDatabase> {
       if (!db.objectStoreNames.contains(SETTINGS)) db.createObjectStore(SETTINGS, { keyPath: "key" })
     }
     request.onsuccess = () => resolve(request.result)
-    request.onerror = () => reject(request.error ?? new Error("Couldn’t open local storage."))
+    request.onerror = () => reject(request.error ?? new Error("Nie udało się otworzyć lokalnej pamięci."))
   })
 }
 
@@ -39,15 +39,16 @@ async function withStore<T>(storeName: string, mode: IDBTransactionMode, operati
     const transaction = db.transaction(storeName, mode)
     const request = operation(transaction.objectStore(storeName))
     request.onsuccess = () => resolve(request.result)
-    request.onerror = () => reject(request.error ?? new Error("Couldn’t save this change."))
+    request.onerror = () => reject(request.error ?? new Error("Nie udało się zapisać tej zmiany."))
     transaction.oncomplete = () => db.close()
-    transaction.onerror = () => reject(transaction.error ?? new Error("Couldn’t save this change."))
+    transaction.onerror = () => reject(transaction.error ?? new Error("Nie udało się zapisać tej zmiany."))
   })
 }
 
 export async function getRecentGroups(): Promise<RecentGroup[]> {
   const groups = await withStore<RecentGroup[]>(GROUPS, "readonly", (store) => store.getAll())
-  return groups.sort((left, right) => Number(right.starred) - Number(left.starred) || Number(left.archived) - Number(right.archived) || right.visitedAt - left.visitedAt)
+  const [currentGroup] = groups.sort((left, right) => right.visitedAt - left.visitedAt)
+  return currentGroup ? [currentGroup] : []
 }
 
 export async function getRecentGroup(groupId: string): Promise<RecentGroup | undefined> {
@@ -57,7 +58,10 @@ export async function getRecentGroup(groupId: string): Promise<RecentGroup | und
 export async function rememberGroup(group: Pick<RecentGroup, "groupId" | "groupName" | "instanceURL">) {
   const previous = await getRecentGroup(group.groupId)
   const next: RecentGroup = { ...previous, ...group, visitedAt: Date.now(), starred: previous?.starred ?? false, archived: previous?.archived ?? false }
-  await withStore(GROUPS, "readwrite", (store) => store.put(next))
+  await withStore(GROUPS, "readwrite", (store) => {
+    store.clear()
+    return store.put(next)
+  })
   return next
 }
 
@@ -79,7 +83,7 @@ export async function getDefaultInstance() {
 export async function setDefaultInstance(value: string) {
   const parsed = new URL(value)
   if (!new Set(["http:", "https:"]).has(parsed.protocol) || parsed.username || parsed.password) {
-    throw new Error("Enter a valid HTTP or HTTPS server address.")
+    throw new Error("Podaj prawidłowy adres serwera z protokołem HTTP lub HTTPS.")
   }
   parsed.hash = ""
   parsed.search = ""

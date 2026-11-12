@@ -3,7 +3,7 @@ import type { Group } from "@/lib/spliit-api"
 export function minorUnitDigits(currencyCode?: string | null) {
   if (!currencyCode) return 2
   try {
-    return new Intl.NumberFormat("en-US", { style: "currency", currency: currencyCode }).resolvedOptions().maximumFractionDigits ?? 2
+    return new Intl.NumberFormat("pl-PL", { style: "currency", currency: currencyCode }).resolvedOptions().maximumFractionDigits ?? 2
   } catch {
     return 2
   }
@@ -14,12 +14,12 @@ export function formatMoney(minorUnits: number, group: Pick<Group, "currency" | 
   const amount = minorUnits / 10 ** digits
   if (group.currencyCode) {
     try {
-      return new Intl.NumberFormat(undefined, { style: "currency", currency: group.currencyCode, maximumFractionDigits: digits }).format(amount)
+      return new Intl.NumberFormat("pl-PL", { style: "currency", currency: group.currencyCode, maximumFractionDigits: digits }).format(amount)
     } catch {
       // An older self-hosted instance can contain a currency code unknown to this browser.
     }
   }
-  return `${group.currency}${new Intl.NumberFormat(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(amount)}`
+  return `${group.currency}${new Intl.NumberFormat("pl-PL", { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(amount)}`
 }
 
 export function amountToMinor(value: string, digits: number) {

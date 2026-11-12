@@ -14,10 +14,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Spliit — shared expenses",
-  description: "Split expenses with friends and settle up simply.",
-  applicationName: "Spliit",
-  appleWebApp: { capable: true, statusBarStyle: "default", title: "Spliit" },
+  title: "Rachuneczki — wspólne wydatki",
+  description: "Dzielcie wspólne wydatki, sprawdzajcie saldo i rozliczajcie się bez wysiłku.",
+  applicationName: "Rachuneczki",
+  appleWebApp: { capable: true, statusBarStyle: "default", title: "Rachuneczki" },
   manifest: "/manifest.webmanifest",
   icons: { icon: "/icon-1024.png", apple: "/icon-1024.png" },
 };
@@ -25,12 +25,13 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#059669",
+  themeColor: "#0b7857",
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="pl" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="min-h-full flex flex-col">
         <PwaRegister />
         {children}
