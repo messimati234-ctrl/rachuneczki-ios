@@ -12,8 +12,8 @@ type DraftParticipant = { id?: string; name: string }
 export function GroupEditor({ baseURL, groupId, onClose, onSaved }: { baseURL: string; groupId: string; onClose: () => void; onSaved: (group: Group) => void }) {
   const { data, error, isLoading } = useSWR([baseURL, "group-details", groupId], ([server, , id]) => getGroupDetails(server, id))
 
-  if (isLoading) return <EditorOverlay onClose={onClose}><div className="editor-loading"><span className="spinner" /> Wczytuję szczegóły grupy…</div></EditorOverlay>
-  if (error || !data) return <EditorOverlay onClose={onClose}><div className="editor-loading"><p role="alert">{error?.message ?? "Nie udało się wczytać grupy."}</p><button className="button button-ghost" onClick={onClose}>Zamknij</button></div></EditorOverlay>
+  if (isLoading) return <EditorOverlay onClose={onClose}><div className="editor-loading"><span className="spinner" /> Wczytuję szczegóły Domu…</div></EditorOverlay>
+  if (error || !data) return <EditorOverlay onClose={onClose}><div className="editor-loading"><p role="alert">{error?.message ?? "Nie udało się wczytać Domu."}</p><button className="button button-ghost" onClick={onClose}>Zamknij</button></div></EditorOverlay>
 
   return <GroupForm key={groupId} baseURL={baseURL} initialGroup={data.group} blockedParticipants={data.participantsWithExpenses ?? []} onClose={onClose} onSaved={onSaved} />
 }
@@ -34,7 +34,7 @@ function GroupForm({ baseURL, initialGroup, blockedParticipants, onClose, onSave
     event.preventDefault()
     const normalizedName = name.trim()
     const names = participants.map((participant) => participant.name.trim())
-    if (normalizedName.length < 2 || normalizedName.length > 50) return setValidation("Nazwa grupy musi mieć od 2 do 50 znaków.")
+    if (normalizedName.length < 2 || normalizedName.length > 50) return setValidation("Nazwa Domu musi mieć od 2 do 50 znaków.")
     if (!currency.trim() || currency.trim().length > 5) return setValidation("Wpisz symbol waluty (maksymalnie 5 znaków).")
     if (!names.length || names.some((participant) => participant.length < 2 || participant.length > 50)) return setValidation("Każda osoba musi mieć imię o długości od 2 do 50 znaków.")
     if (new Set(names.map((participant) => participant.toLocaleLowerCase("pl-PL"))).size !== names.length) return setValidation("Imiona uczestników muszą być unikalne.")
@@ -69,28 +69,28 @@ function GroupForm({ baseURL, initialGroup, blockedParticipants, onClose, onSave
 
   return <EditorOverlay onClose={onClose}>
     <header className="modal-head">
-      <div><div className="eyebrow muted">USTAWIENIA GRUPY</div><h2 id="group-editor-title">Edytuj grupę</h2><p>Zmień jej nazwę, walutę, opis lub listę uczestników.</p></div>
+      <div><div className="eyebrow muted">USTAWIENIA DOMU</div><h2 id="group-editor-title">Edytuj Dom</h2><p>Zmień nazwę Domu, walutę, opis lub listę domowników.</p></div>
       <button className="icon-button" aria-label="Zamknij" onClick={onClose}><X size={18} /></button>
     </header>
     <form className="modal-form" aria-labelledby="group-editor-title" onSubmit={(event) => void save(event)}>
-      <label className="field-label" htmlFor="editor-group-name">Nazwa grupy</label>
-      <input className="text-input" id="editor-group-name" autoFocus maxLength={50} required value={name} onChange={(event) => setName(event.target.value)} placeholder="Weekend w Lizbonie" />
+      <label className="field-label" htmlFor="editor-group-name">Nazwa Domu</label>
+      <input className="text-input" id="editor-group-name" autoFocus maxLength={50} required value={name} onChange={(event) => setName(event.target.value)} placeholder="Nazwa Twojego Domu" />
 
       <div className="field-row">
         <div className="field-grow"><label className="field-label" htmlFor="editor-currency">Waluta</label><select className="text-input" id="editor-currency" value={currencyCode} onChange={(event) => { setCurrencyCode(event.target.value); setCurrency(symbols[event.target.value] ?? event.target.value) }}><option value="PLN">Polski złoty · PLN</option><option value="EUR">Euro · EUR</option><option value="USD">Dolar amerykański · USD</option><option value="GBP">Funt szterling · GBP</option><option value="CHF">Frank szwajcarski · CHF</option><option value="CAD">Dolar kanadyjski · CAD</option><option value="JPY">Jen japoński · JPY</option><option value="AUD">Dolar australijski · AUD</option></select></div>
         <div className="field-symbol"><label className="field-label" htmlFor="editor-symbol">Symbol</label><input className="text-input" id="editor-symbol" maxLength={5} required value={currency} onChange={(event) => setCurrency(event.target.value)} /></div>
       </div>
 
-      <label className="field-label" htmlFor="editor-information">Opis grupy <span className="optional">OPCJONALNIE</span></label>
+      <label className="field-label" htmlFor="editor-information">Opis Domu <span className="optional">OPCJONALNIE</span></label>
       <textarea className="text-input textarea" id="editor-information" rows={2} value={information} onChange={(event) => setInformation(event.target.value)} placeholder="Dodatkowe informacje dla wszystkich" />
 
-      <div className="field-label participants-label"><span><Users size={14} /> Uczestnicy</span><span className="optional">{participants.length} / 50</span></div>
+      <div className="field-label participants-label"><span><Users size={14} /> Domownicy</span><span className="optional">{participants.length} / 50</span></div>
       <div className="participant-fields">{participants.map((participant, index) => {
         const blocked = participant.id && blockedParticipants.includes(participant.id)
         return <div className="participant-field" key={participant.id ?? `participant-${index}`}>
           <span className="mini-avatar participant-mini" style={{ backgroundColor: avatarColor(participant.id ?? `participant-${index}`) }}>{participant.name.slice(0, 1).toUpperCase() || index + 1}</span>
-          <input className="text-input" aria-label={`Uczestnik ${index + 1}`} maxLength={50} value={participant.name} onChange={(event) => setParticipants((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, name: event.target.value } : item))} placeholder="Imię i nazwisko" />
-          {blocked ? <span className="locked-badge" title="Ta osoba jest przypisana do wydatku">W użyciu</span> : <button type="button" className="remove-participant" aria-label={`Usuń uczestnika ${index + 1}`} disabled={participants.length <= 1} onClick={() => setParticipants((current) => current.filter((_, itemIndex) => itemIndex !== index))}><X size={15} /></button>}
+          <input className="text-input" aria-label={`Domownik ${index + 1}`} maxLength={50} value={participant.name} onChange={(event) => setParticipants((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, name: event.target.value } : item))} placeholder="Imię i nazwisko" />
+          {blocked ? <span className="locked-badge" title="Ta osoba jest przypisana do wydatku w Domu">W użyciu</span> : <button type="button" className="remove-participant" aria-label={`Usuń domownika ${index + 1}`} disabled={participants.length <= 1} onClick={() => setParticipants((current) => current.filter((_, itemIndex) => itemIndex !== index))}><X size={15} /></button>}
         </div>
       })}</div>
       <button type="button" className="text-action add-person" disabled={participants.length >= 50} onClick={() => setParticipants((current) => [...current, { name: "" }])}><Plus size={15} /> Dodaj osobę</button>
@@ -101,5 +101,5 @@ function GroupForm({ baseURL, initialGroup, blockedParticipants, onClose, onSave
 }
 
 function EditorOverlay({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
-  return <div className="modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose() }}><section className="modal-card" role="dialog" aria-modal="true" aria-label="Edytuj grupę">{children}</section></div>
+  return <div className="modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose() }}><section className="modal-card" role="dialog" aria-modal="true" aria-label="Edytuj Dom">{children}</section></div>
 }

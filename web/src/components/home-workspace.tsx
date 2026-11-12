@@ -44,18 +44,18 @@ export function HomeWorkspace() {
     try {
       const parsed = new URL(url.trim())
       const match = parsed.pathname.match(/\/groups\/([^/?#]+)/)
-      if (!match) throw new Error("Wklej link zawierający ścieżkę /groups/ oraz identyfikator grupy.")
+      if (!match) throw new Error("Link do Domu musi zawierać ścieżkę /groups/ i jego identyfikator.")
 
       const basePath = parsed.pathname.split("/groups/")[0] || "/"
       const instanceURL = `${parsed.origin}${basePath.endsWith("/") ? basePath : `${basePath}/`}`
       const { group: joinedGroup } = await getGroup(instanceURL, decodeURIComponent(match[1]))
-      if (!joinedGroup) throw new Error("Nie znaleziono tej grupy na wskazanym serwerze Spliit.")
+      if (!joinedGroup) throw new Error("Nie znaleziono Domu na wskazanym serwerze Spliit.")
 
       await rememberGroup({ groupId: joinedGroup.id, groupName: joinedGroup.name, instanceURL })
       await mutate("recent-groups")
       router.push(`/groups/${encodeURIComponent(joinedGroup.id)}`)
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Nie udało się otworzyć grupy.")
+      setError(cause instanceof Error ? cause.message : "Nie udało się otworzyć Domu.")
     } finally {
       setBusy(false)
     }
@@ -81,22 +81,22 @@ export function HomeWorkspace() {
         <p className="home-lead">Dodawajcie wydatki, sprawdzajcie saldo i łatwo ustalajcie, kto komu oddaje pieniądze.</p>
 
         {isLoading ? (
-          <div className="home-loading" role="status"><span className="spinner" /> Wczytuję Twoją grupę…</div>
+          <div className="home-loading" role="status"><span className="spinner" /> Wczytuję Twój Dom…</div>
         ) : group && !replaceGroup ? (
           <section className="single-group-card" aria-labelledby="current-group-title">
-            <div className="single-group-topline"><span className="eyebrow muted">TWOJA JEDYNA GRUPA</span><span className="single-group-status"><span /> Aktywna</span></div>
+            <div className="single-group-topline"><span className="eyebrow muted">TWÓJ DOM</span><span className="single-group-status"><span /> Aktywna</span></div>
             <div className="single-group-details">
               <span className="group-avatar single-group-avatar" style={{ backgroundColor: avatarColor(group.groupId) }}>{group.groupName.slice(0, 1).toUpperCase()}</span>
               <div className="single-group-copy">
                 <h2 id="current-group-title">{group.groupName}</h2>
-                <span><Users size={14} /> Grupa Spliit</span>
+                <span><Users size={14} /> Dom w Spliit</span>
               </div>
             </div>
             <Link className="button button-primary single-group-open" href={`/groups/${encodeURIComponent(group.groupId)}`}>
-              Otwórz grupę <ArrowRight size={16} />
+              Otwórz Dom <ArrowRight size={16} />
             </Link>
             <button className="change-group-button" onClick={() => { setReplaceGroup(true); setError("") }}>
-              Dołącz do innej grupy
+              Podłącz inny Dom
             </button>
           </section>
         ) : (
@@ -104,27 +104,27 @@ export function HomeWorkspace() {
             <div className="join-panel-heading">
               <span className="join-panel-icon"><Link2 size={19} /></span>
               <div>
-                <h2 id="join-title">{group ? "Podmień obecną grupę" : "Dołącz do swojej grupy"}</h2>
-                <p>Wklej link otrzymany od osoby, która utworzyła grupę.</p>
+                <h2 id="join-title">{group ? "Podmień obecny Dom" : "Połącz swój Dom"}</h2>
+                <p>Wklej link do istniejącego Domu udostępniony przez domownika.</p>
               </div>
             </div>
             <form className="join-form" onSubmit={(event) => void joinGroup(event)}>
-              <label className="field-label" htmlFor="group-link">Link do grupy</label>
+              <label className="field-label" htmlFor="group-link">Link do Domu</label>
               <div className="home-link-input">
                 <Link2 size={17} aria-hidden="true" />
                 <input id="group-link" required type="url" inputMode="url" autoComplete="url" value={url} onChange={(event) => setUrl(event.target.value)} placeholder="https://…/groups/ID" />
               </div>
               {error && <p className="form-error" role="alert">{error}</p>}
               <button className="button button-primary join-submit" disabled={busy || !url.trim()}>
-                {busy ? "Sprawdzam link…" : "Otwórz grupę"}<ArrowRight size={16} />
+                {busy ? "Sprawdzam link…" : "Otwórz Dom"}<ArrowRight size={16} />
               </button>
-              {group && <button type="button" className="change-group-button" onClick={() => { setReplaceGroup(false); setUrl(""); setError("") }}>Wróć do obecnej grupy</button>}
+              {group && <button type="button" className="change-group-button" onClick={() => { setReplaceGroup(false); setUrl(""); setError("") }}>Wróć do obecnego Domu</button>}
             </form>
-            <p className="join-note"><Check size={15} /> Jedna grupa na urządzeniu. Nowy link zastąpi poprzednią.</p>
+            <p className="join-note"><Check size={15} /> Jeden Dom na urządzeniu. Łączysz się z istniejącym Domem w Spliit; nowy link zastąpi poprzedni.</p>
           </section>
         )}
 
-        <p className="home-footnote"><Check size={15} /> Bez konta. Dane grupy pozostają na jej serwerze Spliit.</p>
+        <p className="home-footnote"><Check size={15} /> Bez konta. Dane Domu pozostają na jego serwerze Spliit.</p>
       </section>
     </main>
   )

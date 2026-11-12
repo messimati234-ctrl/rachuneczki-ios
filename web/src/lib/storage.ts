@@ -19,7 +19,7 @@ export type RecentGroup = {
 function openDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     if (typeof indexedDB === "undefined") {
-      reject(new Error("Ta przeglądarka nie obsługuje lokalnego zapisu grupy."))
+      reject(new Error("Ta przeglądarka nie obsługuje lokalnego zapisu Domu."))
       return
     }
     const request = indexedDB.open(DATABASE, VERSION)
