@@ -1,0 +1,16 @@
+{
+  "id": "/",
+  "name": "Rachuneczki — wspólne wydatki",
+  "short_name": "Rachuneczki",
+  "description": "Proste dzielenie wspólnych wydatków i rozliczanie salda.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f3f7f4",
+  "theme_color": "#0b7857",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/icon-1024.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icon-1024.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
