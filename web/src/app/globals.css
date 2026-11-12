@@ -334,6 +334,8 @@ a { color: inherit; text-decoration: none; }
 .allocation-warn { background: #fff7e9; color: #a46b13; }
 .document-note { display: flex; align-items: center; gap: 8px; border-radius: 7px; background: #f5f8f6; padding: 9px; color: #68776e; font-size: 9px; }
 .receipt-scan-box { display: grid; gap: 7px; margin-bottom: 3px; }
+.receipt-scan-input { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
+.receipt-scan-input:focus-visible + .receipt-scan-trigger { outline: 2px solid #28634b; outline-offset: 3px; }
 .receipt-scan-trigger { display: flex; min-height: 43px; align-items: center; justify-content: center; gap: 8px; border: 1px dashed #a9c7b5; border-radius: 9px; background: #f7fbf8; padding: 9px 12px; color: #28634b; cursor: pointer; font-size: 11px; font-weight: 620; transition: border-color .16s, background .16s, color .16s; }
 .receipt-scan-trigger:hover { border-color: #66a886; background: #eef8f1; }
 .receipt-scan-trigger.is-scanning { color: #748178; cursor: progress; }

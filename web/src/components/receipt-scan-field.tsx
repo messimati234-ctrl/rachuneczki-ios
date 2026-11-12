@@ -45,11 +45,11 @@ export function ReceiptScanField({ onRead, onScanningChange }: { onRead: (receip
   }
 
   return <div className="receipt-scan-box">
+    <input className="receipt-scan-input" id="expense-receipt" type="file" accept="image/*" capture="environment" aria-describedby="receipt-scan-help" disabled={scanning} onChange={(event) => { const file = event.currentTarget.files?.[0]; event.currentTarget.value = ""; void scan(file) }} />
     <label className={`receipt-scan-trigger ${scanning ? "is-scanning" : ""}`} htmlFor="expense-receipt">
       {scanning ? <LoaderCircle className="receipt-scan-spinner" size={17} aria-hidden="true" /> : <Camera size={17} aria-hidden="true" />}
       <span>{scanning ? "Skanuję paragon…" : "Zeskanuj paragon aparatem lub zdjęciem"}</span>
     </label>
-    <input className="sr-only" id="expense-receipt" type="file" accept="image/*" capture="environment" aria-describedby="receipt-scan-help" disabled={scanning} onChange={(event) => { const file = event.currentTarget.files?.[0]; event.currentTarget.value = ""; void scan(file) }} />
     <p className="receipt-scan-hint" id="receipt-scan-help">Zdjęcie przetwarzamy na tym urządzeniu; zapisujemy tylko odczytaną nazwę i kwotę.</p>
     {status && <p className="receipt-scan-status" role="status" aria-live="polite">{status}</p>}
     {error && <p className="form-error" role="alert">{error}</p>}
